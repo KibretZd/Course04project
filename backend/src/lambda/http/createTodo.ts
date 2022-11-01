@@ -19,7 +19,8 @@ export const handler = middy(
         'item': createdItem
       })
     }
-    // return undefined
+    
+  }
 )
 
 handler.use(

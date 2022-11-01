@@ -1,10 +1,16 @@
+import { TodosAccess } from '../dataLayer/todosAcess'
+import { TodoItem } from '../models/TodoItem'
+import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+// import { createLogger } from '../utils/logger'
+import * as uuid from 'uuid'
+import { getUploadUrl } from '../fileStorageLayer/attachmentUtils'
 
-
+// import * as createError from 'http-errors'
 
 const todosAcess = new TodosAccess()
 
 // TODO: Implement businessLogic
-
 export async function createTodo(
     createTodoRequest:CreateTodoRequest, 
     userId:string) :Promise<TodoItem> {
@@ -21,18 +27,33 @@ export async function createTodo(
     })
 }
 
-export async function getTodosForUser(userId: string) {
+export async function getTodosForUser(
+    userId: string) {
+
     return todosAcess.getTodosForUser(userId)    
 }
 
-export async function deleteTodo(userId: string, todoId: string){
+export async function deleteTodo(
+    userId: string, 
+    todoId: string){
+
     return todosAcess.deleteTodo(userId, todoId)
 }
 
-export async function updateTodo(updateTodoRequest:UpdateTodoRequest, todoId: string, userId: string) {
+export async function updateTodo (
+    updateTodoRequest:UpdateTodoRequest, 
+    todoId: string, 
+    userId: string) {
+    
     return todosAcess.updateTodo(updateTodoRequest, todoId, userId)   
 }
 
-export async function createAttachmentPresignedUrl(todoId:string) {
+export async function createAttachmentPresignedUrl(
+    todoId:string) {
     return getUploadUrl(todoId)    
+}
+
+export async function getTodoById(
+    todoId: string) {
+    return todosAcess.getTodoById(todoId)    
 }
