@@ -12,8 +12,17 @@ export const handler = middy(
     const todoId = event.pathParameters.todoId
     // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     
+    // const todoItem = await getTodoById(todoId)
+    // todoItem.attachmentUrl = `http://${mybucket}.s3.amazonaws.com/${todoId}`
+    // await createAttachmentPresignedUrl(todoItem)
 
-    return undefined
+    const uploadUrl = await createAttachmentPresignedUrl(todoId)
+    return {
+      statusCode: 201,
+      body: JSON.stringify({
+        uploadUrl
+      })
+    }
   }
 )
 
