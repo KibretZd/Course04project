@@ -7,15 +7,16 @@ import { cors, httpErrorHandler } from 'middy/middlewares'
 import { createAttachmentPresignedUrl, getTodoById } from '../../businessLogic/todos'
 // import { getUserId } from '../utils'
 
-const mybucket = process.env.ATTACHMENT_S3_BUCKET
+// const mybucket = process.env.ATTACHMENT_S3_BUCKET
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
     // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     
-    const todoItem = await getTodoById(todoId)
-    todoItem.attachmentUrl = `http://${mybucket}.s3.amazonaws.com/${todoId}`
+    // const todoItem = 
+    await getTodoById(todoId)
+    // todoItem.attachmentUrl = `http://${mybucket}.s3.amazonaws.com/${todoId}`
     // await createAttachmentPresignedUrl(todoItem)
 
     const uploadUrl = await createAttachmentPresignedUrl(todoId)
