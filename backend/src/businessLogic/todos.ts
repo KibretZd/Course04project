@@ -9,6 +9,7 @@ import { getUploadUrl } from '../fileStorageLayer/attachmentUtils'
 // import * as createError from 'http-errors'
 
 const todosAcess = new TodosAccess()
+const mybucket = process.env.ATTACHMENT_S3_BUCKET
 
 // TODO: Implement businessLogic
 export async function createTodo(
@@ -21,7 +22,7 @@ export async function createTodo(
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
-        attachmentUrl: '',
+        attachmentUrl: `http://${mybucket}.s3.amazonaws.com/${todoId}`,
         done: false,
         createdAt: new Date().toISOString()  
     })
