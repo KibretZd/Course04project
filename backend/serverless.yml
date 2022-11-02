@@ -1,7 +1,7 @@
 # TODO: Change the name of the org 
-org: kibretserver
+org: kibret
 app: serverless-todo-app
-service: serverless-todo-app
+service: serverless-todo-app2
 
 plugins:
   - serverless-webpack
@@ -10,8 +10,8 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
 
-package:
-  individualy: true
+# package:
+#   individually: true
 
 provider:
 
@@ -29,9 +29,9 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-kb-images-${self:provider.stage}
+    TODOS_TABLE: Todos2-${self:provider.stage}
+    TODOS_CREATED_AT_INDEX: CreatedAtIndex2
+    ATTACHMENT_S3_BUCKET: serverless-todo-2-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
