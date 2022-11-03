@@ -30,12 +30,13 @@ export class TodosAccess{
         }
 
         const resultSet = await this.docClient.query(getTodoForUserQuery).promise()
+        const items = resultSet.Items 
     
-        if(resultSet.Count !== 0 ){
-            return resultSet.Items as TodoItem[]
-        }
+        // if(resultSet.Count !== 0 ){
+        //     return resultSet.Items as TodoItem[]
+        // }
             
-        return null
+        return items as TodoItem[]
     }
     
     
@@ -94,9 +95,9 @@ export class TodosAccess{
     
         const resultSet = await this.docClient.query(getTodoIdQuery).promise()
 
-        if (resultSet.Count !== 0)
-            return resultSet.Items[0] as TodoItem
-        return null
+        // if (resultSet.Count !== 0)
+            // return resultSet.Items[0] as TodoItem
+        return resultSet.Items[0] as TodoItem
     }
     
     async deleteTodo(userId: string, todoId: string) {
