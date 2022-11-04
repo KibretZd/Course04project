@@ -5,7 +5,9 @@ import { createLogger } from '../utils/logger'
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 
-// const XAWS = AWSXRay.captureAWS(AWS)
+const AWSXRay = require('aws-xray-sdk')
+
+const XAWS = AWSXRay.captureAWS(AWS)
 const logger = createLogger('TodosAccess')
 
 export class TodosAccess{
@@ -39,7 +41,26 @@ export class TodosAccess{
         return items as TodoItem[]
     }
     
-    
+    async createAttachmentPresignedUrl(todoItem:TodoItem){
+        
+        logger.info("Creating attachmentUrl for todoId ", todoItem.todoId)
+
+        const dbQuery = {
+            TableName: this.todosTable,
+            Key:{
+                todoId: todoItem.todoId,
+                userId: todoItem.userId
+            },
+            UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+            ExpressionAttributeValues: {
+                ':attachmentUrl': todoItem.attachmentUrl
+            }
+        }
+
+        logger.info("Todo attachmentUrl has been updated")
+        await this.docClient.update(dbQuery).promise()
+    }
+
     async updateTodo(todoUpdate: TodoUpdate, todoId: string, userId: string) {
 
         logger.info("Updating a todo Item for todoId", todoId)
@@ -50,19 +71,28 @@ export class TodosAccess{
                 "userId": userId,
                 "todoId": todoId
             },
-            UpdateExpression: "set name = :name, dueDate = :dueDate, done = :done",
-            ExpressionAttributeValues:{
-                "name": todoUpdate["name"],
-                "dueDate" : todoUpdate["dueDate"],
-                "done" : todoUpdate["done"]
+            // UpdateExpression: "set name = :name, dueDate = :dueDate, done = :done",
+            // Invalid UpdateExpression: Attribute name is a reserved keyword; reserved keyword: name/
+            UpdateExpression: "set #a = :a, #b = :b, #c = :c",
+            ExpressionAttributeNames: {
+                "#a": "name",
+                "#b": "dueDate",
+                "#c": "done"
             },
-            // ReturnValues: "ALL_NEW"
+            ExpressionAttributeValues:{
+                ":a": todoUpdate.name,
+                ":b" : todoUpdate.dueDate,
+                ":c" : todoUpdate.done
+            },
+            ReturnValues: "ALL_NEW"
         }
         
-        logger.info("Todo Item has been updated")
+        // const resultSet = 
         await this.docClient.update(updateTodoQuery).promise()
+        logger.info("Todo Item has been updated")
+
+        // return resultSet.Attributes as TodoUpdate;
     }
-    
     
     async createTodo(todoItem: TodoItem) :Promise<TodoItem>{
 
@@ -78,7 +108,6 @@ export class TodosAccess{
         logger.info("Todo item has been created")
         return todoItem
     }
-    
     
     async getTodoById(todoId:string) :Promise<TodoItem>{ 
 
@@ -122,13 +151,13 @@ function createDynamoDBClient() {
 
       console.log('Creating a local DynamoDB instance')
     
-    //   return new XAWS.DynamoDB.DocumentClient({
-      return new AWS.DynamoDB.DocumentClient({
+      return new XAWS.DynamoDB.DocumentClient({
+    //   return new AWS.DynamoDB.DocumentClient({
         region: 'localhost',
         endpoint: 'http://localhost:8000'
       })
     }
 
-    // return new XAWS.DynamoDB.DocumentClient()
-    return new AWS.DynamoDB.DocumentClient()
+    return new XAWS.DynamoDB.DocumentClient()
+    // return new AWS.DynamoDB.DocumentClient()
 }

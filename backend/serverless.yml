@@ -1,7 +1,7 @@
 # TODO: Change the name of the org 
 org: kibret
 app: serverless-todo-app
-service: serverless-todo-app2
+service: serverless-todo-app
 
 plugins:
   - serverless-webpack
@@ -29,9 +29,9 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: Todos2-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex2
-    ATTACHMENT_S3_BUCKET: serverless-todo-2-images-${self:provider.stage}
+    TODOS_TABLE: Todos-${self:provider.stage}
+    TODOS_CREATED_AT_INDEX: CreatedAtIndex
+    ATTACHMENT_S3_BUCKET: serverless-todo-app-kibret-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -131,7 +131,7 @@ functions:
           authorizer: Auth
           documentation:
             summary: 'Update a to do item'
-            description: "This is a todoUpdate function description"
+            description: "This is a todo Update function description"
             requestModels:
               "application/json": UpdateTodoRequest
           reqValidatorName: RequestBodyValidator
@@ -182,10 +182,10 @@ functions:
       Action:
         - dynamodb:Query
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
-    # - Effect: Allow
-    #   Action:
-    #     - dynamodb:UpdateItem
-    #   Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     - Effect: Allow
       Action:
         - s3:PutObject

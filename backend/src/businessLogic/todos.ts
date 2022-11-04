@@ -5,11 +5,12 @@ import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 // import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 import { getUploadUrl } from '../fileStorageLayer/attachmentUtils'
+import { TodoUpdate } from '../models/TodoUpdate'
 
 // import * as createError from 'http-errors'
 
 const todosAcess = new TodosAccess()
-const mybucket = process.env.ATTACHMENT_S3_BUCKET
+// const mybucket = process.env.ATTACHMENT_S3_BUCKET
 
 // TODO: Implement businessLogic
 export async function createTodo(
@@ -22,7 +23,7 @@ export async function createTodo(
         userId: userId,
         name: createTodoRequest.name,
         dueDate: createTodoRequest.dueDate,
-        attachmentUrl: `http://${mybucket}.s3.amazonaws.com/${todoId}`,
+        // attachmentUrl: `http://${mybucket}.s3.amazonaws.com/${todoId}`,
         done: false,
         createdAt: new Date().toISOString()  
     })
@@ -42,19 +43,25 @@ export async function deleteTodo(
 }
 
 export async function updateTodo (
-    updateTodoRequest:UpdateTodoRequest, 
-    todoId: string, 
-    userId: string) {
+    updateTodoRequest: UpdateTodoRequest, 
+    todoId: string, userId: string) {
+
+    const todoUpdate:TodoUpdate = {
+        ...updateTodoRequest
+    }
     
-    return todosAcess.updateTodo(updateTodoRequest, todoId, userId)   
+    return todosAcess.updateTodo(todoUpdate, todoId, userId)   
 }
 
 export async function createAttachmentPresignedUrl(
-    todoId:string) {
+    todoItem: TodoItem) {
+    return todosAcess.createAttachmentPresignedUrl(todoItem)    
+}
+
+export async function generateUploadUrl(todoId: string) {
     return getUploadUrl(todoId)    
 }
 
-export async function getTodoById(
-    todoId: string) {
+export async function getTodoById(todoId: string) {
     return todosAcess.getTodoById(todoId)    
 }
